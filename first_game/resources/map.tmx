@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="25">
+ <tileset firstgid="1" name="under_soil" tilewidth="32" tileheight="32" tilecount="16" columns="8">
+  <image source="under_soil.png" width="256" height="64"/>
+ </tileset>
+ <tileset firstgid="17" name="triggers" tilewidth="32" tileheight="32" tilecount="6" columns="6">
+  <image source="triggers.png" width="192" height="32"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt0csNgDAMRMEA4dd/w3EHPhrhGendV9oxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP5pRkfSXbaunys6k96ydf3s0Zb0lK3rxx/fsgDDLgB/
+  </data>
+ </layer>
+ <objectgroup name="triggers" visible="0">
+  <object id="1" gid="17" x="32" y="3103" width="32" height="32">
+   <properties>
+    <property name="player" value="true"/>
+   </properties>
+  </object>
+  <object id="24" x="9" y="3104" width="312" height="9">
+   <properties>
+    <property name="blockers" value="tlrb"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
