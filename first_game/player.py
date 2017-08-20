@@ -20,13 +20,13 @@ class Player(Sprite):
         tilemap = game.tilemap
         key_pressed = key.get_pressed()
 
-        new_rect = self.__get_new_position_without_boundaries(
+        new_rect = self._get_new_position_without_boundaries(
             dt, self.rect, key_pressed, self.vertical_velocity)
 
-        new_rect, on_top = self.__get_new_position_considering_boundaries(
+        new_rect, on_top = self._get_new_position_considering_boundaries(
             self.rect, new_rect, tilemap.layers['triggers'])
 
-        self.vertical_velocity = self.__maintain_jump(
+        self.vertical_velocity = self._maintain_jump(
             key_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)
 
         if key_pressed[K_RIGHT]:
@@ -38,7 +38,7 @@ class Player(Sprite):
         tilemap.set_focus(new_rect.x, new_rect.y) # move the viewport camera as necessary
 
     @staticmethod
-    def __maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity):
+    def _maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity):
         if key_pressed[K_SPACE] and on_top:  # don't jump from mid-air, you must be standing on top of something
             vertical_velocity = -500
 
@@ -47,7 +47,7 @@ class Player(Sprite):
         return vertical_velocity
 
     @staticmethod
-    def __get_new_position_without_boundaries(dt, current_rect, key_pressed, vertical_velocity):
+    def _get_new_position_without_boundaries(dt, current_rect, key_pressed, vertical_velocity):
         new_rect = current_rect.copy()
 
         if key_pressed[K_LEFT]:
@@ -60,7 +60,7 @@ class Player(Sprite):
         return new_rect
 
     @staticmethod
-    def __get_new_position_considering_boundaries(old_rect, new_rect, triggers_layer):
+    def _get_new_position_considering_boundaries(old_rect, new_rect, triggers_layer):
         on_top = False
 
         for boundary, properties in [(boundary, boundary['blockers']) for boundary
