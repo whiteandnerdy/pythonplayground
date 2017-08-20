@@ -466,11 +466,11 @@ visible: Whether the object is shown (1) or hidden (0). Defaults to 1.
         else:
             gid = None
             tile = None
-            w = int(tag.attrib['width'])
-            h = int(tag.attrib['height'])
+            w = int(float(tag.attrib['width']))
+            h = int(float(tag.attrib['height']))
 
-        o = cls(tag.attrib.get('type', 'rect'), int(tag.attrib['x']),
-                int(tag.attrib['y']), w, h, tag.attrib.get('name'), gid, tile,
+        o = cls(tag.attrib.get('type', 'rect'), int(float(tag.attrib['x'])),
+                int(float(tag.attrib['y'])), w, h, tag.attrib.get('name'), gid, tile,
                 int(tag.attrib.get('visible', 1)))
 
         props = tag.find('properties')
