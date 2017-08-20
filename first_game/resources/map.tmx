@@ -11,38 +11,23 @@
    eJzt1UsKwCAMBUD7b+9/4boUEbtRLDgDbx/yIAkBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDW9pgtyzV0ormdMUeWZ+hEc1tjliz30Inmk94ofYyX3ih9tFf6ybUfXepAH+2UfnLtR+ujr6/95jvWR1/6+JcX9pABQQ==
   </data>
  </layer>
- <objectgroup name="triggers" visible="0">
+ <objectgroup name="triggers">
   <object id="1" gid="17" x="32" y="3103" width="32" height="32">
    <properties>
     <property name="player" value="true"/>
    </properties>
   </object>
-  <object id="24" x="1" y="3129" width="297.5" height="70">
+  <object id="33" x="14" y="3103.5" width="288" height="99">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
-  <object id="25" x="385" y="3066" width="114" height="134">
-   <properties>
-    <property name="blockers" value="lrb"/>
-   </properties>
-  </object>
-  <object id="26" x="482" y="2970" width="168" height="230">
-   <properties>
-    <property name="blockers" value="lrb"/>
-   </properties>
-  </object>
-  <object id="33" x="14" y="3103.5" width="288" height="70">
+  <object id="34" x="399" y="3039.5" width="106" height="164.5">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
-  <object id="34" x="399" y="3039.5" width="106" height="134">
-   <properties>
-    <property name="blockers" value="tlrb"/>
-   </properties>
-  </object>
-  <object id="35" x="494.5" y="2944" width="160.5" height="230">
+  <object id="35" x="494.5" y="2944" width="160.5" height="260">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
