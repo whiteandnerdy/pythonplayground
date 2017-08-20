@@ -11,7 +11,7 @@
    eJzt1UsKwCAMBUD7b+9/4boUEbtRLDgDbx/yIAkBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIDW9pgtyzV0ormdMUeWZ+hEc1tjliz30Inmk94ofYyX3ih9tFf6ybUfXepAH+2UfnLtR+ujr6/95jvWR1/6+JcX9pABQQ==
   </data>
  </layer>
- <objectgroup name="triggers">
+ <objectgroup name="triggers" visible="0">
   <object id="1" gid="17" x="32" y="3103" width="32" height="32">
    <properties>
     <property name="player" value="true"/>

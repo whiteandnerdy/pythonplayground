@@ -1,66 +1,78 @@
-import pygame
+from pygame import image, rect, key, K_LEFT, K_RIGHT, K_SPACE
+from pygame.sprite import Sprite
+from collections import namedtuple
 
-from bullet import Bullet
 
+class Player(Sprite):
+    def __init__(self, initial_location, *groups):
+        super().__init__(*groups)
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, location, *groups):
-        super(Player, self).__init__(*groups)
-        self.image = pygame.image.load('resources/player-right.png')
-        self.right_image = self.image
-        self.left_image = pygame.image.load('resources/player-left.png')
-        self.rect = pygame.rect.Rect(location, self.image.get_size())
-        self.resting = False
-        self.dy = 0
+        Images = namedtuple('Images', 'right left')
+        self.images = Images(image.load('resources/player-right.png'),
+                             image.load('resources/player-left.png'))
+        self.vertical_velocity = self.default_vertical_velocity = 400
+
+        self.image = self.images.right
+        self.rect = rect.Rect(initial_location, self.image.get_size())
         self.is_dead = False
-        self.direction = 1
-        self.bullet_delay = 2
 
     def update(self, dt, game):
-        last = self.rect.copy()
+        tilemap = game.tilemap
+        key_pressed = key.get_pressed()
 
-        key = pygame.key.get_pressed()
-        if key[pygame.K_LEFT]:
-            self.rect.x -= 300 * dt
-            self.image = self.left_image
-            self.direction = -1
-        if key[pygame.K_RIGHT]:
-            self.rect.x += 300 * dt
-            self.image = self.right_image
-            self.direction = 1
+        new_rect = self.__get_new_position_without_boundaries(
+            dt, self.rect, key_pressed, self.vertical_velocity)
 
-        self.bullet_delay = min(self.bullet_delay + dt, 2)
+        new_rect, on_top = self.__get_new_position_considering_boundaries(
+            self.rect, new_rect, tilemap.layers['triggers'])
 
-        if key[pygame.K_LSHIFT] \
-                and len([sprite for sprite in game.sprites if type(sprite) == Bullet]) < 5 \
-                and self.bullet_delay > .1:
-            if self.direction > 0:
-                Bullet(self.rect.midright, 1, game.sprites)
-                self.bullet_delay = 0
-            else:
-                Bullet(self.rect.midleft, -1, game.sprites)
-                self.bullet_delay = 0
+        self.vertical_velocity = self.__maintain_jump(
+            key_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)
 
-        if self.resting and key[pygame.K_SPACE]:
-            self.dy = -500
-        self.dy = min(400, self.dy + 40)
+        if key_pressed[K_RIGHT]:
+            self.image = self.images.right
+        if key_pressed[K_LEFT]:
+            self.image = self.images.left
 
-        self.rect.y += self.dy * dt
+        self.rect = new_rect
+        tilemap.set_focus(new_rect.x, new_rect.y) # move the viewport camera as necessary
 
-        new = self.rect
-        self.resting = False
-        for cell in game.tilemap.layers['triggers'].collide(new, 'blockers'):
-            blockers = cell['blockers']
-            if 'l' in blockers and last.right <= cell.left and new.right > cell.left:
-                new.right = cell.left
-            if 'r' in blockers and last.left >= cell.right and new.left < cell.right:
-                new.left = cell.right
-            if 't' in blockers and last.bottom <= cell.top and new.bottom > cell.top:
-                self.resting = True
-                new.bottom = cell.top
-                self.dy = 0
-            if 'b' in blockers and last.top >= cell.bottom and new.top < cell.bottom:
-                new.top = cell.bottom
-                self.dy = 0
+    @staticmethod
+    def __maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity):
+        if key_pressed[K_SPACE] and on_top:  # don't jump from mid-air, you must be standing on top of something
+            vertical_velocity = -500
 
-        game.tilemap.set_focus(new.x, new.y)
+        # turn jump into gravity over time by degrading the vertical velocity
+        vertical_velocity = min(vertical_velocity + 40, default_vertical_velocity)
+        return vertical_velocity
+
+    @staticmethod
+    def __get_new_position_without_boundaries(dt, current_rect, key_pressed, vertical_velocity):
+        new_rect = current_rect.copy()
+
+        if key_pressed[K_LEFT]:
+            new_rect.x -= 300 * dt
+        if key_pressed[K_RIGHT]:
+            new_rect.x += 300 * dt
+
+        new_rect.y += vertical_velocity * dt
+
+        return new_rect
+
+    @staticmethod
+    def __get_new_position_considering_boundaries(old_rect, new_rect, triggers_layer):
+        on_top = False
+
+        for boundary, properties in [(boundary, boundary['blockers']) for boundary
+                                     in triggers_layer.collide(new_rect, 'blockers')]:
+            if 'l' in properties and old_rect.right <= boundary.left and new_rect.right > boundary.left:
+                new_rect.right = boundary.left
+            if 'r' in properties and old_rect.left >= boundary.right and new_rect.left < boundary.right:
+                new_rect.left = boundary.right
+            if 't' in properties and old_rect.bottom <= boundary.top and new_rect.bottom > boundary.top:
+                new_rect.bottom = boundary.top
+                on_top = True
+            if 'b' in properties and old_rect.top >= boundary.bottom and new_rect.top < boundary.bottom:
+                new_rect.top = boundary.bottom
+
+        return new_rect, on_top
