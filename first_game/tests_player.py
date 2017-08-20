@@ -4,7 +4,7 @@ import unittest
 
 
 # I refactored some logic in Player to @staticmethod so I could avoid implementing the
-# inherited dependencies of parent type Sprite.
+# inherited dependencies of parent type Sprite in unit tests.
 
 class PlayerTests(unittest.TestCase):
     def the_space_key_begins_a_jump(self):
