@@ -32,8 +32,6 @@ class PlayerTests(unittest.TestCase):
             def __getitem__(self, item):
                 return 'tlrb'
 
-        Layer().collide(None, None)
-
         Rect = namedtuple('Rect', 'right left bottom top')
         new_rect, on_top = Player._get_new_position_considering_boundaries(Rect(0, 0, 0, 0), Rect(0, 0, 0, 0), Layer())
 
