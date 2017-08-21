@@ -20,32 +20,17 @@
     <property name="player" value="true"/>
    </properties>
   </object>
-  <object id="24" x="1" y="3129" width="297.5" height="70">
+  <object id="33" x="14" y="3103.5" width="288" height="99">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
-  <object id="25" x="385" y="3066" width="114" height="134">
-   <properties>
-    <property name="blockers" value="lrb"/>
-   </properties>
-  </object>
-  <object id="26" x="482" y="2970" width="168" height="230">
-   <properties>
-    <property name="blockers" value="lrb"/>
-   </properties>
-  </object>
-  <object id="33" x="14" y="3103.5" width="288" height="70">
+  <object id="34" x="399" y="3039.5" width="106" height="164.5">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
-  <object id="34" x="399" y="3039.5" width="106" height="134">
-   <properties>
-    <property name="blockers" value="tlrb"/>
-   </properties>
-  </object>
-  <object id="35" x="494.5" y="2944" width="160.5" height="230">
+  <object id="35" x="494.5" y="2944" width="160.5" height="260">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
