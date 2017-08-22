@@ -19,7 +19,7 @@ walk_right[4] = "resources/player-right_4.png"
 walk_right[5] = "resources/player-right_5.png"
 
 
-class player:
+class Player:
     def __init__(self):
         self.x = 200
         self.y = 365
@@ -51,7 +51,7 @@ screen = pygame.display.set_mode((w_width, w_height))
 
 clock = pygame.time.Clock()
 
-player1 = player()
+player1 = Player()
 pos = 0
 while 1:
     screen.fill((255, 255, 255))
@@ -61,10 +61,12 @@ while 1:
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == KEYDOWN and event.key == K_RIGHT:
+            player1.ani = glob.glob("resources/player-right_*.png")
             pos = 1
         elif event.type == KEYUP and event.key == K_RIGHT:
             pos = 0
         elif event.type == KEYDOWN and event.key == K_LEFT:
+            player1.ani = glob.glob("resources/player-left_*.png")
             pos = -1
         elif event.type == KEYUP and event.key == K_LEFT:
             pos = 0
