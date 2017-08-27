@@ -25,7 +25,7 @@ class Player:
         self.y = 365
         self.ani_speed_init = 3  # higher number slower animation
         self.ani_speed = self.ani_speed_init
-        self.ani = glob.glob("resources/player-right_*.png")
+        self.ani = glob.glob("resources/player-right_*.png")  # player starts facing right
         self.ani.sort()
         self.ani_pos = 0
         self.ani_max = len(self.ani) - 1
@@ -44,15 +44,14 @@ class Player:
                 else:
                     self.ani_pos += 1
         screen.blit(self.img, (self.x, self.y))
+
 w_height = 400
 w_width = 600
-
 screen = pygame.display.set_mode((w_width, w_height))
-
 clock = pygame.time.Clock()
-
 player1 = Player()
-pos = 0
+position = 0
+
 while 1:
     screen.fill((255, 255, 255))
     clock.tick(60)
@@ -62,13 +61,14 @@ while 1:
             sys.exit()
         elif event.type == KEYDOWN and event.key == K_RIGHT:
             player1.ani = glob.glob("resources/player-right_*.png")
-            pos = 1
+            position = 1
         elif event.type == KEYUP and event.key == K_RIGHT:
-            pos = 0
+            position = 0
         elif event.type == KEYDOWN and event.key == K_LEFT:
             player1.ani = glob.glob("resources/player-left_*.png")
-            pos = -1
+            position = -1
         elif event.type == KEYUP and event.key == K_LEFT:
-            pos = 0
-    player1.update(pos)
+            position = 0
+
+    player1.update(position)
     pygame.display.update()
