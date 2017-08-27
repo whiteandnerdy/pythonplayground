@@ -7,16 +7,27 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, location, *groups):
         super(Enemy, self).__init__(*groups)
         self.rect = pygame.rect.Rect(location, self.image.get_size())
-        self.direction = 1
+        self.last_direction = 'down'
 
     def update(self, dt, game):
-        self.rect.x += self.direction * 100 * dt
-        for cell in game.tilemap.layers['triggers'].collide(self.rect, 'reverse'):
-            if self.direction > 0:
-                self.rect.right = cell.left
+        if self.last_direction == 'down':
+            self.rect.y += 100 * dt
+        else:
+            self.rect.y -= 100 * dt
+
+        colliding_cells = game.tilemap.layers['triggers'].collide(self.rect, 'blockers') + \
+                          game.tilemap.layers['triggers'].collide(self.rect, 'reverse')
+
+        if len(colliding_cells) > 0:
+            cell = colliding_cells[0]
+
+            # don't overshoot the boundary
+            if self.last_direction == 'down':
+                self.rect.bottom = cell.top
             else:
-                self.rect.left = cell.right
-            self.direction *= -1
-            break
+                self.rect.top = cell.bottom
+
+            self.last_direction = 'up' if self.last_direction == 'down' else 'down'
+
         if self.rect.colliderect(game.player.rect):
             game.player.is_dead = True
