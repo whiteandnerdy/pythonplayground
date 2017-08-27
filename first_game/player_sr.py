@@ -1,32 +1,26 @@
 from pygame import image, rect, key, K_LEFT, K_RIGHT, K_SPACE
 from pygame.sprite import Sprite
-from collections import namedtuple
-from itertools import cycle
 from glob import glob
+from animation import Animation
+
 
 class Player_SR(Sprite):
     def __init__(self, initial_location, *groups):
         super().__init__(*groups)
 
-        Images = namedtuple('Images', 'right left')
-        self.right_images = [image.load(path) for path in sorted(glob("resources/player-right_*.png"))]
-        self.left_images = [image.load(path) for path in sorted(glob("resources/player-left_*.png"))]
-        self.images = Images(cycle(self.right_images), cycle(self.left_images))
-
         self.vertical_velocity = self.default_vertical_velocity = 400
 
-        self.image = next(self.images.right)
+        self.animation = Animation(
+            right_images=[image.load(path) for path in sorted(glob("resources/player-right_*.png"))],
+            left_images=[image.load(path) for path in sorted(glob("resources/player-left_*.png"))])
+        self.image = self.animation.right_images[0]
+
         self.rect = rect.Rect(initial_location, self.image.get_size())
         self.is_dead = False
-        self.last_direction = 'right'
-        self.animation_pause_ms = 50
-        self.ms_since_animation_change = 0
 
     def update(self, dt, game):
         tilemap = game.tilemap
         keys_pressed = key.get_pressed()
-
-        self.ms_since_animation_change += dt * 1000
 
         new_rect = self._get_new_position_without_boundaries(
             dt, self.rect, keys_pressed, self.vertical_velocity)
@@ -37,24 +31,9 @@ class Player_SR(Sprite):
         self.vertical_velocity = self._maintain_jump(
             keys_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)
 
-        if keys_pressed[K_RIGHT] and on_top:
-            if self.ms_since_animation_change >= self.animation_pause_ms:
-                self.ms_since_animation_change = 0
-                self.image = next(self.images.right)
-                self.last_direction = 'right'
-        if keys_pressed[K_LEFT] and on_top:
-            if self.ms_since_animation_change >= self.animation_pause_ms:
-                self.ms_since_animation_change = 0
-                self.image = next(self.images.left)
-                self.last_direction = 'left'
-        if keys_pressed[K_RIGHT] and not on_top:
-            self.image = self.right_images[0]
-            self.last_direction = 'right'
-        if keys_pressed[K_LEFT] and not on_top:
-            self.image = self.left_images[0]
-            self.last_direction = 'left'
-        if keys_pressed[K_SPACE] and on_top:  # if you're launching a jump
-            self.image = self.right_images[0] if self.last_direction == 'right' else self.left_images[0]
+        new_image = self.animation.update(dt, keys_pressed, on_top)
+        if new_image is not None:
+            self.image = new_image
 
         self.rect = new_rect
         tilemap.set_focus(new_rect.x, new_rect.y) # move the viewport camera as necessary
@@ -76,9 +55,9 @@ class Player_SR(Sprite):
         new_rect = current_rect.copy()
 
         if key_pressed[K_LEFT]:
-            new_rect.x -= 300 * dt
+            new_rect.x -= 250 * dt
         if key_pressed[K_RIGHT]:
-            new_rect.x += 300 * dt
+            new_rect.x += 250 * dt
 
         new_rect.y += vertical_velocity * dt
 
