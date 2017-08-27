@@ -1,7 +1,7 @@
 import pygame
 
 from enemy import Enemy
-from player import Player
+from player_sr import Player_SR
 from resources import tmx
 
 
@@ -15,13 +15,17 @@ class Game(object):
 
         self.sprites = tmx.SpriteLayer()
         start_cell = self.tilemap.layers['triggers'].find('player')[0]
-        self.player = Player((start_cell.px, start_cell.py), self.sprites)
-        self.tilemap.layers.append(self.sprites)
+        self.player = Player_SR((start_cell.px, start_cell.py), self.sprites)
+        self.tilemap.layers.add_named(self.sprites, 'player')
 
         self.enemies = tmx.SpriteLayer()
         for enemy in self.tilemap.layers['triggers'].find('enemy'):
             Enemy((enemy.px, enemy.py), self.enemies)
-        self.tilemap.layers.append(self.enemies)
+        self.tilemap.layers.add_named(self.enemies, 'enemies')
+
+        # change the paint order so that foreground terrain is painted last
+        foreground_terrain = self.tilemap.layers.pop(self.tilemap.layers.index(self.tilemap.layers['Tile Layer 2']))
+        self.tilemap.layers.add_named(foreground_terrain, 'foreground_terrain')
 
         while 1:
             dt = clock.tick(30)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="2017.07.25" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="36">
+<map version="1.0" tiledversion="1.0.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="40">
  <tileset firstgid="1" name="under_soil" tilewidth="32" tileheight="32" tilecount="16" columns="8">
   <image source="under_soil.png" width="256" height="64"/>
  </tileset>
@@ -11,7 +11,7 @@
  </tileset>
  <layer name="Tile Layer 1" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt1UEKwyAQBVDbpklzi/b+l6wbQYxiA0mz8D0YCCMEmY9MCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHG2K9ShqyfrLdVcb0hzrWdSa9dfrrjake6xbUa/s+xO2byeZGn32yefYy+Mdtm8nmRt99snn2Mujdpa0+qOr7eTajk5qGcjjOLWdXNvRiTzO1ZtvOS95nOufefzy/9F9AWriAnI=
+   eJzt1csOgjAQBdBRUeQL3OL//6S6IDS1RQw+Fj0nmc3wCJlL2wgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD6tu9chqz7p9//7tGYdsxqS/lB7iK/ZZXVO+td4XjuTrtLnPekcH5byGKO8dia1PuudYp7jw1IetWuR3ZP3W1Y6k0tn9GQf5VmvzaO0tuQxS//3WqX7yZY8xiivLXnMXs03n9eWPC5JLe1jLftlHmve37obiJ4CtQ==
   </data>
  </layer>
  <objectgroup name="triggers" visible="0">
@@ -30,10 +30,35 @@
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
-  <object id="35" x="494.5" y="2944" width="160.5" height="260">
+  <object id="35" x="494.5" y="2943.33" width="160.5" height="260.667">
+   <properties>
+    <property name="blockers" value="tlrb"/>
+   </properties>
+  </object>
+  <object id="36" x="973.833" y="3007.33" width="97.8333" height="195.333">
+   <properties>
+    <property name="blockers" value="tlrb"/>
+   </properties>
+  </object>
+  <object id="37" x="686.5" y="2943.33" width="65.1667" height="260">
+   <properties>
+    <property name="blockers" value="tlrb"/>
+   </properties>
+  </object>
+  <object id="38" x="719.833" y="3007.33" width="160.5" height="196">
+   <properties>
+    <property name="blockers" value="tlrb"/>
+   </properties>
+  </object>
+  <object id="39" x="860.5" y="3103.33" width="130.5" height="99.3333">
    <properties>
     <property name="blockers" value="tlrb"/>
    </properties>
   </object>
  </objectgroup>
+ <layer name="Tile Layer 2" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt07ENACAIRUHGsHD/OZ0BFUPMXflLXogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC/zeROrZHcqXXSww/dd9LDD72jRy969OLWveixbwFX1AGN
+  </data>
+ </layer>
 </map>
