@@ -36,6 +36,9 @@ class Player_SR(Sprite):
         self.rect = new_rect
         tilemap.set_focus(new_rect.x, new_rect.y) # move the viewport camera as necessary
 
+        if new_rect.bottom > 3300:
+            self.is_dead = True
+
     @staticmethod
     def _maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity):
         if key_pressed[K_SPACE] and on_top:  # don't jump from mid-air, you must be standing on top of something
