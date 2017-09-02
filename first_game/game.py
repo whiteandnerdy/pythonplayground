@@ -1,7 +1,7 @@
 import pygame
 
 from enemy import Enemy
-from player_sr import Player_SR
+from player import Player
 from resources import tmx
 
 
@@ -15,7 +15,7 @@ class Game(object):
 
         self.sprites = tmx.SpriteLayer()
         start_cell = self.tilemap.layers['triggers'].find('player')[0]
-        self.player = Player_SR((start_cell.px, start_cell.py), self.sprites)
+        self.player = Player((start_cell.px, start_cell.py), self.sprites)
         self.tilemap.layers.add_named(self.sprites, 'player')
 
         self.enemies = tmx.SpriteLayer()
