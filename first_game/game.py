@@ -1,4 +1,4 @@
-import pygame
+from pygame import key, event, QUIT, KEYDOWN, K_ESCAPE, display, time, image
 
 from enemy import Enemy
 from player import Player
@@ -6,10 +6,9 @@ from resources import tmx
 
 
 class Game(object):
-    def main(self, screen):
-        clock = pygame.time.Clock()
-
-        background = pygame.image.load('resources/background.png')
+    def __init__(self, screen):
+        self.screen = screen
+        self.background = image.load('resources/background.png')
 
         self.tilemap = tmx.load('resources/map.tmx', screen.get_size())
 
@@ -27,19 +26,21 @@ class Game(object):
         foreground_terrain = self.tilemap.layers.pop(self.tilemap.layers.index(self.tilemap.layers['Tile Layer 2']))
         self.tilemap.layers.add_named(foreground_terrain, 'foreground_terrain')
 
+    def main(self):
+        clock = time.Clock()
         while 1:
             dt = clock.tick(30)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            for _event in event.get():
+                if _event.type == QUIT:
                     return
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                if _event.type == KEYDOWN and _event.key == K_ESCAPE:
                     return
 
-            self.tilemap.update(dt / 1000., self)
-            screen.blit(background, (0, 0))
-            self.tilemap.draw(screen)
-            pygame.display.flip()
+            self.tilemap.update(dt / 1000., self.tilemap, key.get_pressed(), self.player)
+            self.screen.blit(self.background, (0, 0))
+            self.tilemap.draw(self.screen)
+            display.flip()
 
             if self.player.is_dead:
                 print('YOU DIED')

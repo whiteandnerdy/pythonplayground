@@ -4,6 +4,10 @@ from glob import glob
 from animation import Animation
 
 
+class OutBoundary:
+    pass
+
+
 class Player(Sprite):
     def __init__(self, initial_location, *groups):
         super().__init__(*groups)
@@ -18,10 +22,7 @@ class Player(Sprite):
         self.rect = rect.Rect(initial_location, self.image.get_size())
         self.is_dead = False
 
-    def update(self, dt, game):
-        tilemap = game.tilemap
-        keys_pressed = key.get_pressed()
-
+    def update(self, dt, tilemap, keys_pressed, player):
         new_rect = self._get_new_position_without_boundaries(
             dt, self.rect, keys_pressed, self.vertical_velocity)
 

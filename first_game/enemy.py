@@ -9,14 +9,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = pygame.rect.Rect(location, self.image.get_size())
         self.last_direction = 'down'
 
-    def update(self, dt, game):
+    def update(self, dt, tilemap, keys_pressed, player):
         if self.last_direction == 'down':
             self.rect.y += 100 * dt
         else:
             self.rect.y -= 100 * dt
 
-        colliding_cells = game.tilemap.layers['triggers'].collide(self.rect, 'blockers') + \
-                          game.tilemap.layers['triggers'].collide(self.rect, 'reverse')
+        colliding_cells = tilemap.layers['triggers'].collide(self.rect, 'blockers') + \
+                          tilemap.layers['triggers'].collide(self.rect, 'reverse')
 
         if len(colliding_cells) > 0:
             cell = colliding_cells[0]
@@ -29,5 +29,5 @@ class Enemy(pygame.sprite.Sprite):
 
             self.last_direction = 'up' if self.last_direction == 'down' else 'down'
 
-        if self.rect.colliderect(game.player.rect):
-            game.player.is_dead = True
+        if self.rect.colliderect(player.rect):
+            player.is_dead = True
