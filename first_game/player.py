@@ -1,4 +1,4 @@
-from pygame import image, rect, key, K_LEFT, K_RIGHT, K_SPACE
+from pygame import image, rect, K_LEFT, K_RIGHT, K_SPACE
 from pygame.sprite import Sprite
 from glob import glob
 from animation import Animation
