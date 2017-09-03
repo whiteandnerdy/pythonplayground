@@ -2,10 +2,7 @@ from pygame import image, rect, key, K_LEFT, K_RIGHT, K_SPACE
 from pygame.sprite import Sprite
 from glob import glob
 from animation import Animation
-
-
-class OutBoundary:
-    pass
+from outboundary import OutBoundary
 
 
 class Player(Sprite):
@@ -26,8 +23,13 @@ class Player(Sprite):
         new_rect = self._get_new_position_without_boundaries(
             dt, self.rect, keys_pressed, self.vertical_velocity)
 
-        new_rect, on_top = self._stick_and_get_new_position(
-            self.rect, new_rect, tilemap.layers['triggers'])
+        boundaries = [OutBoundary(boundary_object) for boundary_object in
+                      tilemap.layers['triggers'].collide(new_rect, 'blockers')
+                      if boundary_object['blockers'] == 'tlrb']
+
+        on_top = False
+        for boundary in boundaries:
+            new_rect, on_top = boundary.stick_and_get_new_position(self.rect, new_rect, on_top)
 
         self.vertical_velocity = self._maintain_jump(
             keys_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)
@@ -63,61 +65,3 @@ class Player(Sprite):
         new_rect.y += vertical_velocity * dt
 
         return new_rect
-
-    @staticmethod
-    def _get_collision_zone(boundary, rect):
-        if rect.right <= boundary.left and rect.bottom <= boundary.top:
-            return 'NW'
-        if rect.left >= boundary.right and rect.bottom <= boundary.top:
-            return 'NE'
-        if rect.right <= boundary.left and rect.top >= boundary.bottom:
-            return 'SW'
-        if rect.left >= boundary.right and rect.top >= boundary.bottom:
-            return 'SE'
-        if rect.bottom <= boundary.top:
-            return 'N'
-        if rect.right <= boundary.left:
-            return 'W'
-        if rect.left >= boundary.right:
-            return 'E'
-        if rect.top >= boundary.bottom:
-            return 'S'
-        raise Exception('can not resolve collision zone: {} in {}'.format(str(rect), str(boundary)))
-
-    @staticmethod
-    def _stick_and_get_new_position(old_rect, new_rect, triggers_layer):
-        boundaries_and_properties = \
-            [(boundary, boundary['blockers']) for boundary in triggers_layer.collide(new_rect, 'blockers')]
-
-        if not any(boundaries_and_properties):
-            return new_rect, False  # if you didn't collide with a boundary you can't be standing on anything
-
-        on_top = False
-        for boundary, property in boundaries_and_properties:
-            collision_zone = Player._get_collision_zone(boundary, old_rect)
-
-            if collision_zone == 'NW':
-                new_rect.bottom = boundary.top + 1
-                new_rect.right = boundary.left
-            elif collision_zone == 'N':
-                new_rect.bottom = boundary.top
-                on_top = True
-            elif collision_zone == 'NE':
-                new_rect.bottom = boundary.top + 1
-                new_rect.left = boundary.right
-            elif collision_zone == 'E':
-                new_rect.left = boundary.right
-            elif collision_zone == 'SE':
-                new_rect.left = boundary.right
-                new_rect.top = boundary.bottom - 1
-            elif collision_zone == 'S':
-                new_rect.top = boundary.bottom
-            elif collision_zone == 'SW':
-                new_rect.top = boundary.bottom - 1
-                new_rect.right = boundary.left
-            elif collision_zone == 'W':
-                new_rect.right = boundary.left
-            else:
-                raise Exception('unknown collision_zone: ', collision_zone)
-
-        return new_rect, on_top
