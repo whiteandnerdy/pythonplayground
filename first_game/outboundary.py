@@ -3,6 +3,8 @@ class OutBoundary:
         self.boundary = boundary
 
     def stick_and_get_new_position(self, old_rect, new_rect, on_top):
+        new_rect = new_rect.copy()
+
         # Nobody says that on_top is False.  If anybody says it's True then it's True for everyone.
         collision_zone = self._get_collision_zone(old_rect)
 

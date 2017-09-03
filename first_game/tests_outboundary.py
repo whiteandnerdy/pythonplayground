@@ -13,6 +13,9 @@ class Rect:
         if left > right or top > bottom:
             raise Exception('invalid: ' + str(self))
 
+    def copy(self):
+        return self
+
     def __repr__(self):
         return str(self)
 

@@ -54,8 +54,8 @@ class Player(Sprite):
         return vertical_velocity
 
     @staticmethod
-    def _get_new_position_without_boundaries(dt, current_rect, key_pressed, vertical_velocity):
-        new_rect = current_rect.copy()
+    def _get_new_position_without_boundaries(dt, new_rect, key_pressed, vertical_velocity):
+        new_rect = new_rect.copy()
 
         if key_pressed[K_LEFT]:
             new_rect.x -= 250 * dt
