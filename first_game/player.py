@@ -25,7 +25,7 @@ class Player(Sprite):
 
         boundaries = [OutBoundary(boundary_object) for boundary_object in
                       tilemap.layers['triggers'].collide(new_rect, 'blockers')
-                      if boundary_object['blockers'] == 'tlrb']
+                      if boundary_object['blockers'] == 'out']
 
         on_top = False
         for boundary in boundaries:
