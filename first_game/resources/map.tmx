@@ -9,12 +9,12 @@
  <tileset firstgid="23" name="udersoil2" tilewidth="32" tileheight="32" tilecount="16" columns="8">
   <image source="under_soil2.png" width="256" height="64"/>
  </tileset>
- <layer name="Tile Layer 1" width="100" height="100" visible="0">
+ <layer name="Tile Layer 1" width="100" height="100">
   <data encoding="base64" compression="zlib">
    eJzt1csOgjAQBdBRUeQL3OL//6S6IDS1RQw+Fj0nmc3wCJlL2wgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD6tu9chqz7p9//7tGYdsxqS/lB7iK/ZZXVO+td4XjuTrtLnPekcH5byGKO8dia1PuudYp7jw1IetWuR3ZP3W1Y6k0tn9GQf5VmvzaO0tuQxS//3WqX7yZY8xiivLXnMXs03n9eWPC5JLe1jLftlHmve37obiJ4CtQ==
   </data>
  </layer>
- <objectgroup name="triggers">
+ <objectgroup name="triggers" visible="0">
   <object id="1" gid="17" x="32" y="3103" width="32" height="32">
    <properties>
     <property name="player" value="true"/>
@@ -61,7 +61,7 @@
    </properties>
   </object>
  </objectgroup>
- <layer name="Tile Layer 2" width="100" height="100" visible="0">
+ <layer name="Tile Layer 2" width="100" height="100">
   <data encoding="base64" compression="zlib">
    eJzt07ENACAIRUHGsHD/OZ0BFUPMXflLXogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC/zeROrZHcqXXSww/dd9LDD72jRy969OLWveixbwFX1AGN
   </data>
