@@ -1,5 +1,5 @@
 import pygame
-from outboundary import OutBoundary
+from inboundary import InBoundary
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -14,15 +14,15 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, dt, tilemap, keys_pressed, player):
         new_rect = self._get_new_position_without_boundaries(dt, self.rect, self.vertical_velocity)
 
-        boundaries = [OutBoundary(boundary_object) for boundary_object in
+        boundaries = [InBoundary(boundary_object) for boundary_object in
                       tilemap.layers['triggers'].collide(new_rect, 'blockers')
-                      if boundary_object['blockers'] == 'out']
+                      if boundary_object['blockers'] == 'in']
 
-        on_top = False
+        on_boundary = False
         for boundary in boundaries:
-            new_rect, on_top = boundary.stick_and_get_new_position(self.rect, new_rect, on_top)
+            new_rect, on_boundary = boundary.stick_and_get_new_position(self.rect, new_rect, on_boundary)
 
-        self.vertical_velocity = self._maintain_jump(on_top, self.vertical_velocity, self.default_vertical_velocity)
+        self.vertical_velocity = self._maintain_jump(on_boundary, self.vertical_velocity, self.default_vertical_velocity)
 
         self.rect = new_rect
 
@@ -38,8 +38,8 @@ class Enemy(pygame.sprite.Sprite):
         return new_rect
 
     @staticmethod
-    def _maintain_jump(on_top, vertical_velocity, default_vertical_velocity):
-        if on_top:  # don't jump from mid-air, you must be standing on top of something
+    def _maintain_jump(on_boundary, vertical_velocity, default_vertical_velocity):
+        if on_boundary and vertical_velocity == default_vertical_velocity:  # don't jump from mid-air, you must be standing on top of something
             vertical_velocity = -500
 
         # turn jump into gravity over time by degrading the vertical velocity
