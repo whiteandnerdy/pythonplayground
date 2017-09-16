@@ -65,7 +65,7 @@
     <property name="enemy" value="true"/>
    </properties>
   </object>
-  <object id="53" name="E1" x="151.333" y="2726" width="128.667" height="271.333">
+  <object id="53" name="E1" x="151.333" y="2768" width="128.667" height="229.333">
    <properties>
     <property name="blockers" value="in"/>
    </properties>
@@ -80,7 +80,7 @@
     <property name="blockers" value="out"/>
    </properties>
   </object>
-  <object id="56" name="B" x="124.333" y="2688.17" width="106" height="94.5">
+  <object id="56" name="B" x="229" y="2689.5" width="106" height="94.5">
    <properties>
     <property name="blockers" value="out"/>
    </properties>

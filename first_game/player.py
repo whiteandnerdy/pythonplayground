@@ -34,7 +34,8 @@ class Player(Sprite):
                                                                                 on_boundary, on_top)
 
         self.vertical_velocity = self._maintain_jump(
-            keys_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)
+            keys_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity,
+            on_boundary, self.rect.top - new_rect.top > 0)
 
         new_image = self.animation.update(dt, keys_pressed, on_top)
         if new_image is not None:
@@ -47,13 +48,17 @@ class Player(Sprite):
             self.is_dead = True
 
     @staticmethod
-    def _maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity):
+    def _maintain_jump(key_pressed, on_top, vertical_velocity, default_vertical_velocity, on_boundary, can_go_higher):
         if key_pressed[K_SPACE] and on_top:  # don't jump from mid-air, you must be standing on top of something
-            vertical_velocity = -500
+            return -500
+
+        # stop velocity degrading short when you bump your head
+        if on_boundary and vertical_velocity != default_vertical_velocity and not can_go_higher:
+            print(can_go_higher)
+            return default_vertical_velocity
 
         # turn jump into gravity over time by degrading the vertical velocity
-        vertical_velocity = min(vertical_velocity + 40, default_vertical_velocity)
-        return vertical_velocity
+        return min(vertical_velocity + 40, default_vertical_velocity)
 
     @staticmethod
     def _get_new_position_without_boundaries(dt, new_rect, key_pressed, vertical_velocity):

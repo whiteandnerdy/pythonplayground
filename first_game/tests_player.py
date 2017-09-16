@@ -130,12 +130,14 @@ class Player_Tests(unittest.TestCase):
 
     def test_the_space_key_begins_a_jump(self):
         vertical_velocity = Player._maintain_jump(key_pressed={K_RIGHT: False, K_LEFT: False, K_SPACE: True},
-                                                  on_top=True, vertical_velocity=0, default_vertical_velocity=1000)
-        self.assertEqual(vertical_velocity, -460)  # -500 + 40
+                                                  on_top=True, vertical_velocity=0, default_vertical_velocity=1000,
+                                                  on_boundary=False, can_go_higher=False)
+        self.assertEqual(vertical_velocity, -500)
 
     def test_can_not_jump_in_mid_air(self):
         vertical_velocity = Player._maintain_jump(key_pressed={K_RIGHT: False, K_LEFT: False, K_SPACE: True},
-                                                  on_top=False, vertical_velocity=0, default_vertical_velocity=1000)
+                                                  on_top=False, vertical_velocity=0, default_vertical_velocity=1000,
+                                                  on_boundary=False, can_go_higher=False)
         self.assertEqual(vertical_velocity, 40)  # 0 + 40
 
 

@@ -33,7 +33,7 @@ class Enemy(Sprite):
                                                                                 on_boundary, on_top)
 
         self.vertical_velocity = self._maintain_jump(
-            on_boundary, self.vertical_velocity, self.default_vertical_velocity, new_rect.top - self.rect.top > 0)
+            on_boundary, self.vertical_velocity, self.default_vertical_velocity, self.rect.top - new_rect.top > 0)
 
         self.rect = new_rect
 
