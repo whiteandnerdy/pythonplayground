@@ -1,7 +1,7 @@
 from pygame import image, rect, K_LEFT, K_RIGHT, K_SPACE
 from pygame.sprite import Sprite
 from glob import glob
-from animation import Animation
+from playeranimation import PlayerAnimation
 from outboundary import OutBoundary
 
 
@@ -11,7 +11,7 @@ class Player(Sprite):
 
         self.vertical_velocity = self.default_vertical_velocity = 400
 
-        self.animation = Animation(
+        self.animation = PlayerAnimation(
             right_images=[image.load(path) for path in sorted(glob("resources/player-right_*.png"))],
             left_images=[image.load(path) for path in sorted(glob("resources/player-left_*.png"))])
         self.image = self.animation.right_images[0]

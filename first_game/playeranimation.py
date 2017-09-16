@@ -3,7 +3,7 @@ from collections import namedtuple
 from itertools import cycle
 
 
-class Animation:
+class PlayerAnimation:
     """assumes the first image is the neutral, non-transitory image for right_images and left_images"""
     def __init__(self, right_images, left_images):
         Images = namedtuple('Images', 'right left')

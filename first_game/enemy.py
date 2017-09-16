@@ -1,15 +1,17 @@
-import pygame
+from pygame.sprite import Sprite
+from pygame.rect import Rect
+from pygame import image
 from inboundary import InBoundary
 from outboundary import OutBoundary
 
 
-class Enemy(pygame.sprite.Sprite):
-    image = pygame.image.load('resources/enemy.png')
+class Enemy(Sprite):
+    image = image.load('resources/enemy.png')
 
     def __init__(self, location, *groups):
         super().__init__(*groups)
 
-        self.rect = pygame.rect.Rect(location, self.image.get_size())
+        self.rect = Rect(location, self.image.get_size())
         self.vertical_velocity = self.default_vertical_velocity = 400
 
     def update(self, dt, tilemap, keys_pressed, player):
@@ -29,8 +31,6 @@ class Enemy(pygame.sprite.Sprite):
         for boundary in out_boundaries:
             new_rect, on_boundary, on_top = boundary.stick_and_get_new_position(self.rect, new_rect,
                                                                                 on_boundary, on_top)
-
-        # on_boundary = on_top
 
         self.vertical_velocity = self._maintain_jump(
             on_boundary, self.vertical_velocity, self.default_vertical_velocity, new_rect.top - self.rect.top > 0)
