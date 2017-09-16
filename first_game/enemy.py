@@ -1,5 +1,6 @@
 import pygame
 from inboundary import InBoundary
+from outboundary import OutBoundary
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -16,13 +17,17 @@ class Enemy(pygame.sprite.Sprite):
 
         boundaries = [InBoundary(boundary_object) for boundary_object in
                       tilemap.layers['triggers'].collide(new_rect, 'blockers')
-                      if boundary_object['blockers'] == 'in']
+                      if boundary_object['blockers'] == 'in'] + \
+                     [OutBoundary(boundary_object) for boundary_object in
+                      tilemap.layers['triggers'].collide(new_rect, 'blockers')
+                      if boundary_object['blockers'] == 'out']
 
         on_boundary = False
         for boundary in boundaries:
             new_rect, on_boundary = boundary.stick_and_get_new_position(self.rect, new_rect, on_boundary)
 
-        self.vertical_velocity = self._maintain_jump(on_boundary, self.vertical_velocity, self.default_vertical_velocity)
+        self.vertical_velocity = self._maintain_jump(
+            on_boundary, self.vertical_velocity, self.default_vertical_velocity, new_rect.top - self.rect.top > 0)
 
         self.rect = new_rect
 
@@ -38,10 +43,13 @@ class Enemy(pygame.sprite.Sprite):
         return new_rect
 
     @staticmethod
-    def _maintain_jump(on_boundary, vertical_velocity, default_vertical_velocity):
+    def _maintain_jump(on_boundary, vertical_velocity, default_vertical_velocity, can_go_higher):
         if on_boundary and vertical_velocity == default_vertical_velocity:  # don't jump from mid-air, you must be standing on top of something
-            vertical_velocity = -500
+            return -500
+
+        # stop velocity degrading short when you bump your head
+        if on_boundary and vertical_velocity != default_vertical_velocity and not can_go_higher:
+            return default_vertical_velocity
 
         # turn jump into gravity over time by degrading the vertical velocity
-        vertical_velocity = min(vertical_velocity + 40, default_vertical_velocity)
-        return vertical_velocity
+        return min(vertical_velocity + 40, default_vertical_velocity)
