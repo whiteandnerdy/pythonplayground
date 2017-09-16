@@ -131,9 +131,11 @@ class OutBoundary_Tests(unittest.TestCase):
         boundaries[1]._get_collision_zone = lambda rect: 'S'  # does not set on_top
 
         on_top = False
+        on_boundary = False
         new_rect = Rect(10, 20, 10, 20)
         for boundary in boundaries:
-            new_rect, on_top = boundary.stick_and_get_new_position(Rect(10, 20, 10, 20), new_rect, on_top)
+            new_rect, on_boundary, on_top = boundary.stick_and_get_new_position(Rect(10, 20, 10, 20),
+                                                                                new_rect, on_boundary, on_top)
 
         self.assertEqual(on_top, True)
 
@@ -143,87 +145,89 @@ class OutBoundary_Tests(unittest.TestCase):
         boundaries[1]._get_collision_zone = lambda rect: 'N'  # does not set on_top
 
         on_top = False
+        on_boundary = False
         new_rect = Rect(10, 20, 10, 20)
         for boundary in boundaries:
-            new_rect, on_top = boundary.stick_and_get_new_position(Rect(10, 20, 10, 20), new_rect, on_top)
+            new_rect, on_boundary, on_top = boundary.stick_and_get_new_position(Rect(10, 20, 10, 20),
+                                                                                new_rect, on_boundary, on_top)
 
         self.assertEqual(on_top, True)
 
     def test_no_collision_means_not_on_top_and_new_rect_unchanged(self):
         original_rect = Rect(5, 7, 5, 7)
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(4, 6, 4, 6), new_rect=original_rect,
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(on_top, False)
         self.assertEqual(new_rect, original_rect)
 
     def test_a_NW_collision_causes_a_W_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(4, 6, 4, 6), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(8, 10, 9, 11))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'W')
         self.assertEqual(on_top, False)
 
     def test_a_N_collision_causes_a_N_stick_and_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(14, 16, 4, 6), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(14, 16, 8, 10))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'N')
         self.assertEqual(on_top, True)
 
     def test_a_NE_collision_causes_a_E_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(24, 26, 4, 6), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(20, 22, 9, 11))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'E')
         self.assertEqual(on_top, False)
 
     def test_a_E_collision_causes_a_E_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(24, 26, 14, 16), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(20, 22, 14, 16))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'E')
         self.assertEqual(on_top, False)
 
     def test_a_SE_collision_causes_a_E_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(24, 26, 24, 26), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(20, 22, 19, 21))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'E')
         self.assertEqual(on_top, False)
 
     def test_a_S_collision_causes_a_S_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(14, 16, 24, 26), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(14, 16, 20, 22))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'S')
         self.assertEqual(on_top, False)
 
     def test_a_SW_collision_causes_a_W_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(4, 6, 24, 26), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(8, 10, 19, 21))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'W')
         self.assertEqual(on_top, False)
 
     def test_a_W_collision_causes_a_W_stick_and_not_on_top(self):
-        new_rect, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
+        new_rect, on_boundary, on_top = OutBoundary(boundary=Rect(10, 20, 10, 20)).stick_and_get_new_position(
             old_rect=Rect(4, 6, 14, 16), new_rect=Rect(14, 16, 14, 16),
-            on_top=False)
+            on_top=False, on_boundary=False)
         self.assertEqual(new_rect, Rect(8, 10, 14, 16))
         collision_zone = OutBoundary(Rect(10, 20, 10, 20))._get_collision_zone(new_rect)
         self.assertEqual(collision_zone, 'W')

@@ -2,7 +2,7 @@ class OutBoundary:
     def __init__(self, boundary):
         self.boundary = boundary
 
-    def stick_and_get_new_position(self, old_rect, new_rect, on_top):
+    def stick_and_get_new_position(self, old_rect, new_rect, on_boundary, on_top):
         new_rect = new_rect.copy()
 
         # Nobody says that on_top is False.  If anybody says it's True then it's True for everyone.
@@ -11,28 +11,36 @@ class OutBoundary:
         if collision_zone == 'NW':
             new_rect.bottom = self.boundary.top + 1
             new_rect.right = self.boundary.left
+            on_boundary = True
         elif collision_zone == 'N':
             new_rect.bottom = self.boundary.top
             on_top = True
+            on_boundary = True
         elif collision_zone == 'NE':
             new_rect.bottom = self.boundary.top + 1
             new_rect.left = self.boundary.right
+            on_boundary = True
         elif collision_zone == 'E':
             new_rect.left = self.boundary.right
+            on_boundary = True
         elif collision_zone == 'SE':
             new_rect.left = self.boundary.right
             new_rect.top = self.boundary.bottom - 1
+            on_boundary = True
         elif collision_zone == 'S':
             new_rect.top = self.boundary.bottom
+            on_boundary = True
         elif collision_zone == 'SW':
             new_rect.top = self.boundary.bottom - 1
             new_rect.right = self.boundary.left
+            on_boundary = True
         elif collision_zone == 'W':
             new_rect.right = self.boundary.left
+            on_boundary = True
         else:
             raise Exception('unknown collision_zone: ', collision_zone)
 
-        return new_rect, on_top
+        return new_rect, on_boundary, on_top
 
     def _get_collision_zone(self, rect):
         if rect.right <= self.boundary.left and rect.bottom <= self.boundary.top:

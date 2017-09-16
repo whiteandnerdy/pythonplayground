@@ -28,8 +28,10 @@ class Player(Sprite):
                       if boundary_object['blockers'] == 'out']
 
         on_top = False
+        on_boundary = False
         for boundary in boundaries:
-            new_rect, on_top = boundary.stick_and_get_new_position(self.rect, new_rect, on_top)
+            new_rect, on_boundary, on_top = boundary.stick_and_get_new_position(self.rect, new_rect,
+                                                                                on_boundary, on_top)
 
         self.vertical_velocity = self._maintain_jump(
             keys_pressed, on_top, self.vertical_velocity, self.default_vertical_velocity)

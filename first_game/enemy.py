@@ -15,16 +15,22 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, dt, tilemap, keys_pressed, player):
         new_rect = self._get_new_position_without_boundaries(dt, self.rect, self.vertical_velocity)
 
-        boundaries = [InBoundary(boundary_object) for boundary_object in
+        in_boundaries = [InBoundary(boundary_object) for boundary_object in
                       tilemap.layers['triggers'].collide(new_rect, 'blockers')
-                      if boundary_object['blockers'] == 'in'] + \
-                     [OutBoundary(boundary_object) for boundary_object in
+                      if boundary_object['blockers'] == 'in']
+        out_boundaries = [OutBoundary(boundary_object) for boundary_object in
                       tilemap.layers['triggers'].collide(new_rect, 'blockers')
                       if boundary_object['blockers'] == 'out']
 
+        on_top = False
         on_boundary = False
-        for boundary in boundaries:
+        for boundary in in_boundaries:
             new_rect, on_boundary = boundary.stick_and_get_new_position(self.rect, new_rect, on_boundary)
+        for boundary in out_boundaries:
+            new_rect, on_boundary, on_top = boundary.stick_and_get_new_position(self.rect, new_rect,
+                                                                                on_boundary, on_top)
+
+        # on_boundary = on_top
 
         self.vertical_velocity = self._maintain_jump(
             on_boundary, self.vertical_velocity, self.default_vertical_velocity, new_rect.top - self.rect.top > 0)
