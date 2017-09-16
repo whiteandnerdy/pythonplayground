@@ -54,7 +54,6 @@ class Player(Sprite):
 
         # stop velocity degrading short when you bump your head
         if on_boundary and vertical_velocity != default_vertical_velocity and not can_go_higher:
-            print(can_go_higher)
             return default_vertical_velocity
 
         # turn jump into gravity over time by degrading the vertical velocity
