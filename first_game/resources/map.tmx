@@ -14,7 +14,7 @@
    eJzt1csKwjAQBdCIldovcFv//ye1i0Aak9CIj0XOgdlMH5S5TBMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACfNj3rnNWc9Of/fdqwLlktSX+pPcTXnLK6Jv17eN2daKr06ZPOcdPKYw3l3YlqffrEOW5aedSuheyevD+y0plcOqNTpVkfzaO0W/LYy8/k2hkdvZvHGsq7JY+91nxb/5nePG5Jtd4/ul/lcfT9I3sAF54CnQ==
   </data>
  </layer>
- <objectgroup name="triggers">
+ <objectgroup name="triggers" visible="0">
   <object id="1" gid="17" x="32" y="3103" width="32" height="32">
    <properties>
     <property name="player" value="true"/>
@@ -55,34 +55,14 @@
     <property name="blockers" value="out"/>
    </properties>
   </object>
-  <object id="51" name="E1" x="403.333" y="2792.67" width="88" height="271.333">
+  <object id="51" name="E1" x="398.667" y="2800.67" width="254" height="271.333">
    <properties>
     <property name="blockers" value="in"/>
    </properties>
   </object>
-  <object id="52" gid="18" x="160" y="2817.33" width="32" height="32">
+  <object id="52" gid="18" x="418" y="2848" width="32" height="32">
    <properties>
     <property name="enemy" value="true"/>
-   </properties>
-  </object>
-  <object id="53" name="E1" x="151.333" y="2768" width="128.667" height="229.333">
-   <properties>
-    <property name="blockers" value="in"/>
-   </properties>
-  </object>
-  <object id="54" name="B" x="83" y="2882.17" width="106" height="164.5">
-   <properties>
-    <property name="blockers" value="out"/>
-   </properties>
-  </object>
-  <object id="55" name="B" x="237.667" y="2952.83" width="106" height="94.5">
-   <properties>
-    <property name="blockers" value="out"/>
-   </properties>
-  </object>
-  <object id="56" name="B" x="229" y="2689.5" width="106" height="94.5">
-   <properties>
-    <property name="blockers" value="out"/>
    </properties>
   </object>
  </objectgroup>
