@@ -14,7 +14,7 @@ class Enemy(Sprite):
 
         self.rect = Rect(location, self.image.get_size())
         self.vertical_velocity = self.default_vertical_velocity = 200
-        self.rightward_velocity = 1
+        self.rightward_velocity = 100
         self.vertical_velocity_decay = 40
         self.jump_velocity = -300
 
@@ -38,9 +38,12 @@ class Enemy(Sprite):
                                                                                 on_boundary, on_top)
 
         if on_boundary:
-            self.rightward_velocity = randint(-100, 100)
             self.vertical_velocity_decay = randint(5, 30)
             self.jump_velocity = randint(-500, -300)
+            if new_rect.right <= self.rect.right and self.rightward_velocity > 0: # bounce off right bounding wall and go left
+                self.rightward_velocity = randint(-200, -30)
+            elif new_rect.right >= self.rect.right and self.rightward_velocity < 0: # bounce off left bounding wall and go right
+                self.rightward_velocity = randint(30, 200)
 
         self.vertical_velocity = self._maintain_jump(
             on_boundary, self.vertical_velocity, self.default_vertical_velocity,
