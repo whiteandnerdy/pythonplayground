@@ -2,7 +2,7 @@
 
 None of the network steps have security on them.  On the contrary, they expose you more than you are today to public hacking.  Outlined below are some steps to mitigate some of that risk, but I'm sure they're all hackable by the determined and skilled. 
 
-1. Setup SSH hosting.
+1. Setup SSH hosting.      **NOT READY YET**
 * In your server
 * I am creating a script to do this.  It is a little involved.  [Info I'm using](https://www.youtube.com/watch?v=-J9wUW5NhOQ)
 
