@@ -8,4 +8,6 @@
 * [no-IP Instructional Video -- Router Setup with DNS name](https://www.youtube.com/watch?v=EH8wJt81bqg)
 
 3. Setup port forwarding.
+* You will have to do this on your router.  You're exposing a TCP port on your public IP and that is uniquely on your router.
+* Each network service you host on the DEV server will have a TCP port number.  Like SSH=22, PostgreSQL=5432, etc.
 * [no-IP Instructional Video -- Port Forwarding](https://www.youtube.com/watch?v=CLunOJZqmc0)
