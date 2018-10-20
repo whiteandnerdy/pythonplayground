@@ -5,7 +5,7 @@
 2. Setup an account with a free Dynamic DNS service.  Your router will constrain your choices here or you can choose any of them if you chose to use Linux client software instead.  I'm going to assume your router supports the "no-IP" provider and you've chosen to use it.
 * Setup an account at https://www.noip.com/.
 * Login to your router and enter your account information and the DNS name you created with your account:  nis-food.ddns.net
-* [no-IP Instructional Video](https://www.youtube.com/watch?v=EH8wJt81bqg)
+* [no-IP Instructional Video -- Router Setup with DNS name](https://www.youtube.com/watch?v=EH8wJt81bqg)
 
 3. Setup port forwarding.
-* 
+* [no-IP Instructional Video -- Port Forwarding](https://www.youtube.com/watch?v=CLunOJZqmc0)
