@@ -1,0 +1,27 @@
+---
+- hosts: all
+  gather_facts: no
+  pre_tasks:
+    - name: install python2
+      raw: sudo apt-get -y install python
+      become: yes
+  tasks:
+    - name: gather facts
+      setup:
+    - name: install vim
+      become: yes
+      apt:
+        name: vim
+        state: present
+        update_cache: yes
+    - name: install jq
+      become: yes
+      apt:
+        name: jq
+        state: present
+        update_cache: yes
+    - name: remove unused apt packages
+      become: yes
+      apt:
+        autoremove: yes
+
