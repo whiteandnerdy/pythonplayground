@@ -9,8 +9,15 @@
         name: ['vim', 'jq', 'python3-pip']
         state: present
         update_cache: yes
+        cache_valid_time: 3600
         autoremove: yes
         autoclean: yes
+    - name: upgrade all apt packages
+      become: yes
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 3600
     - name: install jupyter
       become: yes
       pip:
