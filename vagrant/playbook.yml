@@ -1,13 +1,8 @@
 ---
 - hosts: all
-  gather_facts: no
-  pre_tasks:
-    - name: install python2
-      raw: sudo apt-get -y install python
-      become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
-    - name: gather facts
-      setup:
     - name: install vim
       become: yes
       apt:
