@@ -3,20 +3,12 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
-    - name: install vim
+    - name: install apt packages
       become: yes
       apt:
-        name: vim
+        name: ['vim', 'jq']
         state: present
         update_cache: yes
-    - name: install jq
-      become: yes
-      apt:
-        name: jq
-        state: present
-        update_cache: yes
-    - name: remove unused apt packages
-      become: yes
-      apt:
         autoremove: yes
+        autoclean: yes
 
