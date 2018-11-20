@@ -6,9 +6,14 @@
     - name: install apt packages
       become: yes
       apt:
-        name: ['vim', 'jq']
+        name: ['vim', 'jq', 'python3-pip']
         state: present
         update_cache: yes
         autoremove: yes
         autoclean: yes
+    - name: install jupyter
+      become: yes
+      pip:
+        name: jupyter
+        state: present
 
