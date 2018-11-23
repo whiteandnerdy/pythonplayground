@@ -45,4 +45,10 @@
         systemd_service_Service_Restart: always
         systemd_service_Service_RestartSec: 10
         systemd_service_Install_WantedBy: multi-user.target
+    - name: enable jupyterhub service -- autostart on boot
+      become: yes
+      service:
+        name: jupyterhub
+        enabled: yes
+        state: started
 
