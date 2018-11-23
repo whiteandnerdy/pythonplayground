@@ -6,7 +6,7 @@
     - name: upgrade all apt packages
       become: yes
       apt:
-        upgrade: yes
+        upgrade: dist
         update_cache: yes
         cache_valid_time: 3600
     - name: install apt packages
@@ -23,4 +23,19 @@
       pip:
         name: jupyter
         state: present
+  roles:
+    - role: tumf.systemd-service
+      become: yes
+      warn: False
+      systemd_service_name: jupyter
+      systemd_service_Unit_Description: jupyter
+      systemd_service_Service_Type: simple
+      systemd_service_Service_PIDFile: /run/jupyter.pid
+      systemd_service_Service_ExecStart: /usr/local/bin/jupyter notebook --ip 0.0.0.0
+      systemd_service_Service_User: vagrant
+      systemd_service_Service_Group: vagrant
+      systemd_service_Service_WorkingDirectory: /home/vagrant
+      systemd_service_Service_Restart: always
+      systemd_service_Service_RestartSec: 10
+      systemd_service_Install_WantedBy: multi-user.target
 
