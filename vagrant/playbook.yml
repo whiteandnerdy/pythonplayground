@@ -12,20 +12,37 @@
     - name: install apt packages
       become: yes
       apt:
-        name: ['vim', 'jq', 'python3-pip', 'npm', 'nodejs-legacy']
+        name: ['vim', 'jq', 'python3-pip', 'npm', 'nodejs']
         state: present
         update_cache: yes
         cache_valid_time: 3600
         autoremove: yes
         autoclean: yes
     - name: install jupyterhub proxy
+      become: yes
       npm:
         name: configurable-http-proxy
         global: yes
         state: present
-    - name: install jupyter
+    - name: install jupyterhub
       become: yes
       pip:
         name: ['jupyterhub', 'notebook']
         state: present
+    - name: create jupyter daemon
+      import_role:
+        name: tumf.systemd-service
+      become: yes
+      vars:
+        systemd_service_name: jupyterhub
+        systemd_service_Unit_Description: jupyterhub
+        systemd_service_Service_Type: simple
+        systemd_service_Service_PIDFile: /run/jupyterhub.pid
+        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888
+        systemd_service_Service_User: vagrant
+        systemd_service_Service_Group: vagrant
+        systemd_service_Service_WorkingDirectory: /home/vagrant
+        systemd_service_Service_Restart: always
+        systemd_service_Service_RestartSec: 10
+        systemd_service_Install_WantedBy: multi-user.target
 
