@@ -28,7 +28,6 @@
         name: tumf.systemd-service
       become: yes
       vars:
-        warn: False
         systemd_service_name: jupyter
         systemd_service_Unit_Description: jupyter
         systemd_service_Service_Type: simple
