@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/bionic64"
   config.disksize.size = "100GB"
+  config.vm.network "forwarded_port", guest: 8888, host: 8888
 
     config.vm.provider "virtualbox" do |vb|
       vb.cpus = 1
@@ -24,6 +25,7 @@ Vagrant.configure("2") do |config|
     end
 
   config.vm.provision "ansible" do |ansible|
+    ansible.galaxy_role_file = 'requirements.yml'
     ansible.playbook = "playbook.yml"
   end
 end
