@@ -9,15 +9,61 @@
       pip:
         name: pyOpenSSL
         state: present
-    - name: create TLS cert from local CA
+    - name: create certs path locally
+      delegate_to: localhost
+      become: yes
+      file:
+        path: certs
+        state: directory
+        owner: d
+        group: d
+
+# CREATE ROOT CA
+    - name: create TLS rootca key locally
+      delegate_to: localhost
+      openssl_privatekey:
+        path: certs/rootca.key
+        size: 2048
+        state: present
+        type: RSA
+    - name: create TLS rootca CSR locally
+      delegate_to: localhost
+      openssl_csr:
+        path: certs/rootca.csr
+        common_name: david-rootca
+        privatekey_path: certs/rootca.key
+    - name: create TLS rootca cert locally --- you should manually add certs/rootca.pem to your browsers trusted root certs
       delegate_to: localhost
       openssl_certificate:
-        path: /home/d/certs/v.pem
-        csr_path: /home/d/certs/v.csr
-        ownca_path: /home/d/rootca/rootCA.pem
-        ownca_privatekey_path: /home/d/rootca/rootCA.key
-        ownca_privatekey_passphrase: gogogo
+        path: certs/rootca.pem
+        csr_path: certs/rootca.csr
+        privatekey_path: certs/rootca.key
+        provider: selfsigned
+
+# CREATE CERTS FOR JupyterHub
+    - name: create TLS key for jupyterhub locally
+      delegate_to: localhost
+      openssl_privatekey:
+        path: certs/jupyterhub.key
+        size: 2048
+        state: present
+        type: RSA
+    - name: create TLS CSR for jupyterhub locally --- you should manually add \"127.0.0.1 local-dev\" to your /etc/hosts file
+      delegate_to: localhost
+      openssl_csr:
+        path: certs/jupyterhub.csr
+        common_name: local-dev
+        privatekey_path: certs/jupyterhub.key
+    - name: create TLS cert for jupyterhub locally
+      delegate_to: localhost
+      openssl_certificate:
+        path: certs/jupyterhub.pem
+        csr_path: certs/jupyterhub.csr
+        ownca_path: certs/rootca.pem
+        ownca_privatekey_path: certs/rootca.key
         provider: ownca
+
+# COPY CERT FILES ONTO THE JupyterHub SERVER
     - name: create cert path
       become: yes
       file:
@@ -26,22 +72,24 @@
         owner: vagrant
         group: vagrant
         mode: u=rwx,g=r,o=r
-    - name: copy TLC key for JupyterHub to use
+    - name: copy TLS key for JupyterHub to use
       become: yes
       copy:
-        src: /home/d/certs/v.key
-        dest: /home/vagrant/certs/v.key
+        src: certs/jupyterhub.key
+        dest: /home/vagrant/certs/jupyterhub.key
         owner: vagrant
         group: vagrant
         mode: u=rw
     - name: copy TLS cert for JupyterHub to use
       become: yes
       copy:
-        src: /home/d/certs/v.pem
-        dest: /home/vagrant/certs/v.pem
+        src: certs/jupyterhub.pem
+        dest: certs/jupyterhub.pem
         owner: vagrant
         group: vagrant
         mode: u=rw,g=r,o=r
+
+# OTHER INSTALL STUFF
     - name: upgrade all apt packages
       become: yes
       apt:
@@ -77,7 +125,7 @@
         systemd_service_Unit_Description: jupyterhub
         systemd_service_Service_Type: simple
         systemd_service_Service_PIDFile: /run/jupyterhub.pid
-        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888 --ssl-key /home/vagrant/certs/v.key --ssl-cert /home/vagrant/certs/v.pem
+        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888 --ssl-key /home/vagrant/certs/jupyterhub.key --ssl-cert /home/vagrant/certs/jupyterhub.pem
         systemd_service_Service_User: root
         systemd_service_Service_Group: root
         systemd_service_Service_WorkingDirectory: /home/vagrant
