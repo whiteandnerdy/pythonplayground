@@ -32,6 +32,7 @@
         path: certs/rootca.csr
         common_name: david-rootca
         privatekey_path: certs/rootca.key
+        basic_constraints: "CA:true"
     - name: create TLS rootca cert locally --- you should manually add certs/rootca.pem to your browsers trusted root certs
       delegate_to: localhost
       openssl_certificate:
