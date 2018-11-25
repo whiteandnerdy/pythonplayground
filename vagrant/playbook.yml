@@ -3,6 +3,39 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
+    - name: create TLS cert from local CA
+      delegate_to: localhost
+      openssl_certificate:
+        path: /home/d/certs/v.pem
+        csr_path: /home/d/certs/v.csr
+        ownca_path: /home/d/rootca/rootCA.pem
+        ownca_privatekey_path: /home/d/rootca/rootCA.key
+        ownca_privatekey_passphrase: gogogo
+        provider: ownca
+    - name: create cert path
+      become: yes
+      file:
+        path: /home/vagrant/certs
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: u=rwx,g=r,o=r
+    - name: copy TLC key for JupyterHub to use
+      become: yes
+      copy:
+        src: /home/d/certs/v.key
+        dest: /home/vagrant/certs/v.key
+        owner: vagrant
+        group: vagrant
+        mode: u=rw
+    - name: copy TLS cert for JupyterHub to use
+      become: yes
+      copy:
+        src: /home/d/certs/v.pem
+        dest: /home/vagrant/certs/v.pem
+        owner: vagrant
+        group: vagrant
+        mode: u=rw,g=r,o=r
     - name: upgrade all apt packages
       become: yes
       apt:
@@ -38,7 +71,7 @@
         systemd_service_Unit_Description: jupyterhub
         systemd_service_Service_Type: simple
         systemd_service_Service_PIDFile: /run/jupyterhub.pid
-        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888
+        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888 --ssl-key /home/vagrant/certs/v.key --ssl-cert /home/vagrant/certs/v.pem
         systemd_service_Service_User: root
         systemd_service_Service_Group: root
         systemd_service_Service_WorkingDirectory: /home/vagrant
@@ -51,4 +84,5 @@
         name: jupyterhub
         enabled: yes
         state: started
+...
 
