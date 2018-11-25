@@ -3,6 +3,12 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
+    - name: install pyOpenSSL locally to enable creating certs
+      delegate_to: localhost
+      become: yes
+      pip:
+        name: pyOpenSSL
+        state: present
     - name: create TLS cert from local CA
       delegate_to: localhost
       openssl_certificate:
