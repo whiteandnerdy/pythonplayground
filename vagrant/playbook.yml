@@ -1,12 +1,10 @@
 ---
+#  to run this playbook on a remote Azure Linux VM:  ansible-playbook -i azure.ini playbook.yml
+
 - hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
-
-#    - name: print vars
-#      debug:
-#        msg: "{{ inventory_hostname }}"
 
     - name: install self signed certs to JupyterHub
       import_role:
