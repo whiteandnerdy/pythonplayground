@@ -4,9 +4,14 @@
     ansible_python_interpreter: /usr/bin/python3
   tasks:
 
+#    - name: print vars
+#      debug:
+#        msg: "{{ inventory_hostname }}"
+
     - name: install self signed certs to JupyterHub
       import_role:
         name: self-signed-certs
+      when: inventory_hostname == 'default'
 
 # OTHER INSTALL STUFF
     - name: upgrade all apt packages
