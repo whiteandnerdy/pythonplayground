@@ -47,7 +47,7 @@
         systemd_service_Unit_Description: jupyterhub
         systemd_service_Service_Type: simple
         systemd_service_Service_PIDFile: /run/jupyterhub.pid
-        systemd_service_Service_ExecStart: /usr/local/bin/jupyterhub --ip 0.0.0.0 --port 8888 --ssl-key /home/vagrant/certs/jupyterhub.key --ssl-cert /home/vagrant/certs/jupyterhub.pem
+        systemd_service_Service_ExecStart: "/usr/local/bin/jupyterhub --ip 0.0.0.0 --port {{ jupyterhub_port }} --ssl-key {{ jupyterhub_ssl_key_path }} --ssl-cert {{ jupyterhub_ssl_cert_path }}"
         systemd_service_Service_User: root
         systemd_service_Service_Group: root
         systemd_service_Service_WorkingDirectory: /home/vagrant

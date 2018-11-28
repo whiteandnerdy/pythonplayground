@@ -27,7 +27,12 @@ Vagrant.configure("2") do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.galaxy_role_file = "requirements.yml"
     ansible.playbook = "playbook.yml"
-    ansible.extra_vars = { ansible_sudo_pass: ENV["SSHPASS"] }
+    ansible.extra_vars = { 
+      ansible_sudo_pass: ENV["SSHPASS"],
+      jupyterhub_port: 8888,
+      jupyterhub_ssl_key_path: "/home/vagrant/certs/jupyterhub.key",
+      jupyterhub_ssl_cert_path: "/home/vagrant/certs/jupyterhub.pem"
+    }
 #    ansible.verbose = '-vvv'
   end
 end
