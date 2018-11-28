@@ -1,0 +1,92 @@
+---
+# tasks file for roles/self-signed-certs
+
+    - name: install pyOpenSSL locally to enable creating certs
+      delegate_to: localhost
+      become: yes
+      pip:
+        name: pyOpenSSL
+        state: present
+    - name: create certs path locally
+      delegate_to: localhost
+      become: yes
+      file:
+        path: certs
+        state: directory
+        owner: d
+        group: d
+
+# CREATE ROOT CA
+    - name: create TLS rootca key locally
+      delegate_to: localhost
+      openssl_privatekey:
+        path: certs/rootca.key
+        size: 2048
+        state: present
+        type: RSA
+    - name: create TLS rootca CSR locally
+      delegate_to: localhost
+      openssl_csr:
+        path: certs/rootca.csr
+        common_name: david-rootca
+        privatekey_path: certs/rootca.key
+        basic_constraints: "CA:true"
+    - name: create TLS rootca cert locally --- you should manually add certs/rootca.pem to your browsers trusted root certs
+      delegate_to: localhost
+      openssl_certificate:
+        path: certs/rootca.pem
+        csr_path: certs/rootca.csr
+        privatekey_path: certs/rootca.key
+        provider: selfsigned
+
+# CREATE CERTS FOR JupyterHub
+    - name: create TLS key for jupyterhub locally
+      delegate_to: localhost
+      openssl_privatekey:
+        path: certs/jupyterhub.key
+        size: 2048
+        state: present
+        type: RSA
+    - name: create TLS CSR for jupyterhub locally --- you should manually add "127.0.0.1 local-dev" to your /etc/hosts file
+      delegate_to: localhost
+      openssl_csr:
+        path: certs/jupyterhub.csr
+        common_name: local-dev
+        privatekey_path: certs/jupyterhub.key
+    - name: create TLS cert for jupyterhub locally
+      delegate_to: localhost
+      openssl_certificate:
+        path: certs/jupyterhub.pem
+        csr_path: certs/jupyterhub.csr
+        ownca_path: certs/rootca.pem
+        ownca_privatekey_path: certs/rootca.key
+        provider: ownca
+
+# COPY CERT FILES ONTO THE JupyterHub SERVER
+    - name: create cert path
+      become: yes
+      file:
+        path: /home/vagrant/certs
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: u=rwx,g=r,o=r
+    - name: copy TLS key for JupyterHub to use
+      become: yes
+      copy:
+        src: certs/jupyterhub.key
+        dest: /home/vagrant/certs/jupyterhub.key
+        owner: vagrant
+        group: vagrant
+        mode: u=rw
+    - name: copy TLS cert for JupyterHub to use
+      become: yes
+      copy:
+        src: certs/jupyterhub.pem
+        dest: certs/jupyterhub.pem
+        owner: vagrant
+        group: vagrant
+        mode: u=rw,g=r,o=r
+
+...
+
