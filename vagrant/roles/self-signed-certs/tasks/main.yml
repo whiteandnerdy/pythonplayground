@@ -15,6 +15,11 @@
         state: directory
         owner: d
         group: d
+    - name: create certs path
+      become: yes
+      file:
+        path: /var/private/ssl
+        state: directory
 
 # CREATE ROOT CA
     - name: create TLS rootca key locally

@@ -2,6 +2,7 @@
 #  to run this playbook on a remote Azure Linux VM:  ansible-playbook -i azure.ini playbook.yml
 
 - hosts: all
+  become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
   tasks:
@@ -11,15 +12,81 @@
         name: self-signed-certs
       when: inventory_hostname == 'default'
 
+    - name:  install LetsEncrypt certs to JupyterHub
+      when: inventory_hostname == 'azure'
+      block:
+      - name: create LetsEncrypt serving path
+        file:
+          path: /var/private/ssl/letsencrypt
+          state: directory
+      - name: create LetsEncrypt account key
+        delegate_to: localhost
+        openssl_privatekey:
+          path: certs/letsencrypt_account.key
+          size: 2048
+          state: present
+          type: RSA
+          mode: 0600
+      - name: create LetsEncrypt HTTPS key
+        delegate_to: localhost
+        openssl_privatekey:
+          path: certs/letsencrypt_https.key
+          size: 2048
+          state: present
+          type: RSA
+          mode: 0600
+      - name: create LetsEncrypt CSR
+        delegate_to: localhost
+        openssl_csr:
+          path: certs/letsencrypt_https.csr
+          common_name: dav.southcentralus.cloudapp.azure.com
+          privatekey_path: certs/letsencrypt_https.key
+          state: present
+          mode: 0600
+      - name: request LetsEncrypt challenge
+        letsencrypt:
+          account_email: davepshaffer@yahoo.com
+          account_key: certs/letsencrypt_account.key
+          csr: certs/letsencrypt_https.csr
+          dest: certs/letsencrypt_https.pem
+        register: challenge
+      - name: copy cert challenge files
+        copy:
+          content: "{{ challenge['challenge_data'][domain]['http-01']['resource_value'] }}"
+          dest: "/var/private/ssl/letsencrypt/.well-known/acme-challenge/{{ challenge['challenge_data'][domain]['http-01']['resource'] }}"
+          mode: 0644
+        when: challenge|changed
+      - name: create cert path and LetsEncrypt challenge path
+        file:
+          path: /var/private/ssl/.well-known/acme-challenge
+          state: directory
+      - name: start HTTP server to expose the challenge files
+        command: sudo python3 -m http.server 80
+        args:
+          chdir: /var/private/ssl/letsencrypt
+      - name: respond to LetsEncrypt challenge, create LetsEncrypt cert, and install in JupyterHub
+        letsencrypt:
+          account_email: davepshaffer@yahoo.com
+          account_key: certs/letsencrypt_account.key
+          csr: certs/letsencrypt_https.csr
+          dest: certs/letsencrypt_https.pem
+          data: "{{ challenge }}"
+      always:
+        - name: get PID of HTTP server
+          shell: ps -ef | grep http.server | grep -v sudo | grep -w python3.*server.*80 | awk '{print $2}'
+          register: python3_pid
+        - name: shutdown HTTP server
+          shell: "kill -9 {{ python3_pid.stdout_lines }}"
+          when: python3_pid
+
+
 # OTHER INSTALL STUFF
     - name: upgrade all apt packages
-      become: yes
       apt:
         upgrade: dist
         update_cache: yes
         cache_valid_time: 3600
     - name: install apt packages
-      become: yes
       apt:
         name: ['vim', 'jq', 'python3-pip', 'npm', 'nodejs']
         state: present
@@ -28,20 +95,17 @@
         autoremove: yes
         autoclean: yes
     - name: install jupyterhub proxy
-      become: yes
       npm:
         name: configurable-http-proxy
         global: yes
         state: present
     - name: install jupyterhub
-      become: yes
       pip:
         name: ['jupyterhub', 'notebook']
         state: present
     - name: create jupyterhub daemon
       import_role:
         name: tumf.systemd-service
-      become: yes
       vars:
         systemd_service_name: jupyterhub
         systemd_service_Unit_Description: jupyterhub
@@ -50,12 +114,11 @@
         systemd_service_Service_ExecStart: "/usr/local/bin/jupyterhub --ip 0.0.0.0 --port {{ jupyterhub_port }} --ssl-key {{ jupyterhub_ssl_key_path }} --ssl-cert {{ jupyterhub_ssl_cert_path }}"
         systemd_service_Service_User: root
         systemd_service_Service_Group: root
-        systemd_service_Service_WorkingDirectory: /home/vagrant
+        systemd_service_Service_WorkingDirectory: /var/private/ssl
         systemd_service_Service_Restart: always
         systemd_service_Service_RestartSec: 10
         systemd_service_Install_WantedBy: multi-user.target
     - name: enable jupyterhub service -- autostart on boot
-      become: yes
       service:
         name: jupyterhub
         enabled: yes
